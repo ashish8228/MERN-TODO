@@ -6,13 +6,11 @@ const app = express ();
 
 dotenv.config();
 
-
 app.use(express.json());
-
 
 app.use("/api/todos",todoroutes)
 
-app.listen(4001,()=>{
-    ConnectDb();
+app.listen(4001,async ()=>{
+    await ConnectDb();
     console.log("Server listening at port number 4001");
 })

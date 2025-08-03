@@ -2,18 +2,21 @@ import { useState } from "react";
 import axios from "axios";
 
 function App() {
-  const[Newtodo, setnewto] = useState("");
+  const [Newtodo, setnewto] = useState("");
+  const [todos, settodos] = useState([]);
 
-  const Addtodo = async (e)=>{
+  const Addtodo = async (e) => {
     e.preventDefault();
 
-    if(!Newtodo.trim()) return;
-    
-    try{
-      const response = await axios.post("/api/todos",{text:Newtodo});
+    if (!Newtodo.trim()) return;
+
+    try {
+      const response = await axios.post("/api/todos", { text: Newtodo });
+      settodos(...todos, response.data);
+      setnewto('')
     }
-    catch(err){
-      console.log({message : err})
+    catch (err) {
+      console.log("Error to adding todo: ", err)
     }
   }
   return (
@@ -32,13 +35,23 @@ function App() {
             placeholder="Enter Your Task"
             value={Newtodo}
             required
-            onChange={(e)=>{setnewto(e.target.value)}}
+            onChange={(e) => { setnewto(e.target.value) }}
           />
           <button type="submit" className="font-semibold text-white bg-blue-400 hover:bg-blue-500  rounded-xl px-5 py-2 cursor-pointer">Add Task</button>
         </form>
+        <div>{todos.length === 0 ? (
+          <div></div>
+        ) : (
+            <div>
+              {todos.map((todos)=>
+                <div key={todos._id}>{todos.text}</div>
+              )}
+            </div>
+        )}</div>
       </div>
 
     </div>
+
   )
 }
 
