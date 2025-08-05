@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
@@ -12,13 +12,27 @@ function App() {
 
     try {
       const response = await axios.post("/api/todos", { text: Newtodo });
-      settodos(...todos, response.data);
+      settodos([...todos, response.data])
       setnewto('')
     }
     catch (err) {
       console.log("Error to adding todo: ", err)
     }
   }
+
+  const fetchtodos = async () => {
+    try {
+      const response = await axios.get("/api/todos");
+      settodos(response.data)
+    }
+    catch (err) {
+      console.log("Error in fetching todo : ", err)
+    }
+  }
+
+  useEffect(() => {
+    fetchtodos();
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-200 flex items-center justify-center p-4">
       <div className="shadow-lg p-8 rounded-2xl bg-white w-full max-w-lg">
@@ -42,11 +56,11 @@ function App() {
         <div>{todos.length === 0 ? (
           <div></div>
         ) : (
-            <div>
-              {todos.map((todos)=>
-                <div key={todos._id}>{todos.text}</div>
-              )}
-            </div>
+          <div>
+            {todos.map((todo) =>
+              <div key={todo._id}>{todo.text}</div>
+            )}
+          </div>
         )}</div>
       </div>
 
